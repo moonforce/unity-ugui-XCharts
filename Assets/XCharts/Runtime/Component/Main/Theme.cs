@@ -451,6 +451,17 @@ namespace XCharts
                     m_VisualMapBorderColor = GetColor("#cccccc"),
                     m_ColorPalette = new Color32[]
                     {
+                        new Color32(22, 173, 255, 255),
+                        new Color32(94,98,255, 255),
+                        new Color32(38,66,206, 255),
+                        new Color32(255,166,80, 255),
+                        new Color32(200,102,6, 255),
+                        new Color32(13,143,161, 255),
+                        new Color32(25, 105, 183, 255),
+                        new Color32(21, 75, 163, 255),
+                        new Color32(97, 42, 190, 255),
+                        new Color32(118, 67, 236, 255),                       
+                        //default color
                         new Color32(194, 53, 49, 255),
                         new Color32(47, 69, 84, 255),
                         new Color32(97, 160, 168, 255),
@@ -461,20 +472,23 @@ namespace XCharts
                         new Color32(189, 162, 154, 255),
                         new Color32(110, 112, 116, 255),
                         new Color32(84, 101, 112, 255),
-                        new Color32(196, 204, 211, 255)
+                        new Color32(196, 204, 211, 255),
+                         //light color
+                        new Color32(55, 162, 218, 255),
+                        new Color32(255, 159, 127, 255),
+                        new Color32(50, 197, 233, 255),
+                        new Color32(251, 114, 147, 255),
+                        new Color32(103, 224, 227, 255),
+                        new Color32(224, 98, 174, 255),
+                        new Color32(159, 230, 184, 255),
+                        new Color32(230, 144, 209, 255),
+                        new Color32(255, 219, 92, 255),
+                        new Color32(230, 188, 243, 255),
+                        new Color32(157, 150, 245, 255),
+                        new Color32(131, 120, 234, 255),
+                        new Color32(150, 191, 255, 255),
                     },
                     m_CustomColorPalette = new List<Color32>{
-                        Color.clear,
-                        Color.clear,
-                        Color.clear,
-                        Color.clear,
-                        Color.clear,
-                        Color.clear,
-                        Color.clear,
-                        Color.clear,
-                        Color.clear,
-                        Color.clear,
-                        Color.clear
                     }
                 };
             }

@@ -20,6 +20,7 @@ namespace XCharts
     {
         private bool isDrawPie;
         private bool m_IsEnterLegendButtom;
+        public int ShowCount { get; set; } = -1;//-1:全部显示
 
         protected override void Awake()
         {
@@ -204,8 +205,11 @@ namespace XCharts
                         if (SerieLabelHelper.CanShowLabel(serie, serieData, serieLabel, 1))
                         {
                             int colorIndex = m_LegendRealShowName.IndexOf(serieData.name);
-                            Color color = m_ThemeInfo.GetColor(colorIndex);
-                            DrawLabelLine(vh, serie, serieData, color);
+                            if (ShowCount == -1 || colorIndex < ShowCount)
+                            {
+                                Color color = m_ThemeInfo.GetColor(colorIndex);
+                                DrawLabelLine(vh, serie, serieData, color);
+                            }                            
                         }
                     }
                 }
@@ -223,8 +227,12 @@ namespace XCharts
                         var serieLabel = SerieHelper.GetSerieLabel(serie, serieData);
                         if (SerieLabelHelper.CanShowLabel(serie, serieData, serieLabel, 1))
                         {
-                            UpdateLabelPostion(serie, serieData);
-                            DrawLabelBackground(vh, serie, serieData);
+                            int colorIndex = m_LegendRealShowName.IndexOf(serieData.name);
+                            if (ShowCount == -1 || colorIndex < ShowCount)
+                            {
+                                UpdateLabelPostion(serie, serieData);
+                                DrawLabelBackground(vh, serie, serieData);
+                            }                                
                         }
                     }
                 }
@@ -234,6 +242,13 @@ namespace XCharts
         private void DrawLabelLine(VertexHelper vh, Serie serie, SerieData serieData, Color color)
         {
             var serieLabel = SerieHelper.GetSerieLabel(serie, serieData);
+            float lineLength1 = serieLabel.lineLength1;
+            float lineLength2 = serieLabel.lineLength2;
+            if (serieData.index % 2 == 1 && serieLabel.exchangeLableLineLength)
+            {
+                lineLength1 = serieLabel.lineLength2;
+                lineLength2 = serieLabel.lineLength1;
+            }         
             if (serieLabel.show
                 && serieLabel.position == SerieLabel.Position.Outside
                 && serieLabel.line)
@@ -248,7 +263,7 @@ namespace XCharts
                 float currCos = Mathf.Cos(currAngle * Mathf.Deg2Rad);
                 var radius1 = serieLabel.lineType == SerieLabel.LineType.HorizontalLine ?
                     serie.runtimeOutsideRadius : outSideRadius;
-                var radius2 = serie.runtimeOutsideRadius + serieLabel.lineLength1;
+                var radius2 = serie.runtimeOutsideRadius + lineLength1;
                 var radius3 = insideRadius + (outSideRadius - insideRadius) / 2;
                 if (radius1 < serie.runtimeInsideRadius) radius1 = serie.runtimeInsideRadius;
                 radius1 -= 0.1f;
@@ -265,7 +280,7 @@ namespace XCharts
                     tx = serieLabel.lineWidth * Mathf.Sin((90 - currAngle) * Mathf.Deg2Rad);
                     pos3 = new Vector3(pos2.x - tx, pos2.y + ty - serieLabel.lineWidth);
                     var r4 = Mathf.Sqrt(radius1 * radius1 - Mathf.Pow(currCos * radius3, 2)) - currSin * radius3;
-                    r4 += serieLabel.lineLength1 - lineCircleDiff;
+                    r4 += lineLength1 - lineCircleDiff;
                     pos6 = pos0 + Vector3.right * lineCircleDiff;
                     pos4 = pos6 + Vector3.right * r4;
                 }
@@ -275,7 +290,7 @@ namespace XCharts
                     tx = serieLabel.lineWidth * Mathf.Cos((180 - currAngle) * Mathf.Deg2Rad);
                     pos3 = new Vector3(pos2.x - tx, pos2.y - ty + serieLabel.lineWidth);
                     var r4 = Mathf.Sqrt(radius1 * radius1 - Mathf.Pow(currCos * radius3, 2)) - currSin * radius3;
-                    r4 += serieLabel.lineLength1 - lineCircleDiff;
+                    r4 += lineLength1 - lineCircleDiff;
                     pos6 = pos0 + Vector3.right * lineCircleDiff;
                     pos4 = pos6 + Vector3.right * r4;
                 }
@@ -287,7 +302,7 @@ namespace XCharts
                     var currCos1 = Mathf.Cos((360 - currAngle) * Mathf.Deg2Rad);
                     pos3 = new Vector3(pos2.x + tx, pos2.y - ty + serieLabel.lineWidth);
                     var r4 = Mathf.Sqrt(radius1 * radius1 - Mathf.Pow(currCos1 * radius3, 2)) - currSin1 * radius3;
-                    r4 += serieLabel.lineLength1 - lineCircleDiff;
+                    r4 += lineLength1 - lineCircleDiff;
                     pos6 = pos0 + Vector3.left * lineCircleDiff;
                     pos4 = pos6 + Vector3.left * r4;
                 }
@@ -299,11 +314,11 @@ namespace XCharts
                     var currSin1 = Mathf.Sin((360 - currAngle) * Mathf.Deg2Rad);
                     var currCos1 = Mathf.Cos((360 - currAngle) * Mathf.Deg2Rad);
                     var r4 = Mathf.Sqrt(radius1 * radius1 - Mathf.Pow(currCos1 * radius3, 2)) - currSin1 * radius3;
-                    r4 += serieLabel.lineLength1 - lineCircleDiff;
+                    r4 += lineLength1 - lineCircleDiff;
                     pos6 = pos0 + Vector3.left * lineCircleDiff;
                     pos4 = pos6 + Vector3.left * r4;
                 }
-                var pos5 = new Vector3(currAngle > 180 ? pos3.x - serieLabel.lineLength2 : pos3.x + serieLabel.lineLength2, pos3.y);
+                var pos5 = new Vector3(currAngle > 180 ? pos3.x - lineLength2 : pos3.x + lineLength2, pos3.y);
                 switch (serieLabel.lineType)
                 {
                     case SerieLabel.LineType.BrokenLine:
@@ -358,7 +373,7 @@ namespace XCharts
 
         private void DrawLabel(Serie serie, int dataIndex, SerieData serieData, Color serieColor)
         {
-            if (serieData.labelObject == null) return;
+            if (serieData.labelObject == null || (dataIndex >= ShowCount && ShowCount !=-1)) return;
             var currAngle = serieData.runtimePieHalfAngle;
             var isHighlight = (serieData.highlighted && serie.emphasis.label.show);
             var serieLabel = SerieHelper.GetSerieLabel(serie, serieData);
@@ -392,6 +407,7 @@ namespace XCharts
                 serieData.labelObject.label.color = color;
                 serieData.labelObject.label.fontSize = fontSize;
                 serieData.labelObject.label.fontStyle = fontStyle;
+                serieData.labelObject.label.lineSpacing = 0.75f;
                 serieData.labelObject.SetLabelRotate(rotate);
 
                 UpdateLabelPostion(serie, serieData);
@@ -404,6 +420,8 @@ namespace XCharts
                 }
                 else
                 {
+                    if (serieData.name.Contains("newline"))
+                        serieData.name = serieData.name.Replace("newline", "\n");
                     if (serieData.labelObject.SetText(serieData.name)) RefreshChart();
                 }
                 serieData.labelObject.SetPosition(serieData.labelPosition);
@@ -426,6 +444,13 @@ namespace XCharts
             var insideRadius = serieData.runtimePieInsideRadius;
             var outsideRadius = serieData.runtimePieOutsideRadius;
             var serieLabel = SerieHelper.GetSerieLabel(serie, serieData);
+            float lineLength1 = serieLabel.lineLength1;
+            float lineLength2 = serieLabel.lineLength2;
+            if (serieData.index % 2 == 1 && serieLabel.exchangeLableLineLength)
+            {
+                lineLength1 = serieLabel.lineLength2;
+                lineLength2 = serieLabel.lineLength1;
+            }
             switch (serieLabel.position)
             {
                 case SerieLabel.Position.Center:
@@ -451,23 +476,23 @@ namespace XCharts
                             currCos = Mathf.Cos((360 - currAngle) * Mathf.Deg2Rad);
                         }
                         var r4 = Mathf.Sqrt(radius1 * radius1 - Mathf.Pow(currCos * radius3, 2)) - currSin * radius3;
-                        r4 += serieLabel.lineLength1 + serieLabel.lineWidth * 4;
+                        r4 += lineLength1 + serieLabel.lineWidth * 4;
                         r4 += serieData.labelObject.label.preferredWidth / 2;
                         serieData.labelPosition = pos0 + (currAngle > 180 ? Vector3.left : Vector3.right) * r4;
                     }
                     else
                     {
-                        labelRadius = serie.runtimeOutsideRadius + serieLabel.lineLength1;
+                        labelRadius = serie.runtimeOutsideRadius + lineLength1;
                         labelCenter = new Vector2(serie.runtimeCenterPos.x + labelRadius * Mathf.Sin(currRad),
                             serie.runtimeCenterPos.y + labelRadius * Mathf.Cos(currRad));
                         float labelWidth = serieData.labelObject.label.preferredWidth;
                         if (currAngle > 180)
                         {
-                            serieData.labelPosition = new Vector2(labelCenter.x - serieLabel.lineLength2 - 5 - labelWidth / 2, labelCenter.y);
+                            serieData.labelPosition = new Vector2(labelCenter.x - lineLength2 - 5 - labelWidth / 2, labelCenter.y);
                         }
                         else
                         {
-                            serieData.labelPosition = new Vector2(labelCenter.x + serieLabel.lineLength2 + 5 + labelWidth / 2, labelCenter.y);
+                            serieData.labelPosition = new Vector2(labelCenter.x + lineLength2 + 5 + labelWidth / 2, labelCenter.y);
                         }
                     }
                     break;

@@ -44,6 +44,7 @@ namespace XCharts
             SerializedProperty m_BorderWidth = prop.FindPropertyRelative("m_BorderWidth");
             SerializedProperty m_BorderColor = prop.FindPropertyRelative("m_BorderColor");
             SerializedProperty m_NumericFormatter = prop.FindPropertyRelative("m_NumericFormatter");
+            SerializedProperty m_ExchangeLableLineLength = prop.FindPropertyRelative("m_ExchangeLableLineLength");
 
             ChartEditorHelper.MakeFoldout(ref drawRect, ref m_SerieLabelToggle, prop, null, show, false);
             drawRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
@@ -98,6 +99,8 @@ namespace XCharts
                 drawRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
                 EditorGUI.PropertyField(drawRect, m_LineLength2);
                 drawRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+                EditorGUI.PropertyField(drawRect, m_ExchangeLableLineLength);
+                drawRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
                 --EditorGUI.indentLevel;
             }
         }
@@ -107,7 +110,7 @@ namespace XCharts
             float height = 0;
             if (ChartEditorHelper.IsToggle(m_SerieLabelToggle, prop))
             {
-                height += 23 * EditorGUIUtility.singleLineHeight + 22 * EditorGUIUtility.standardVerticalSpacing;
+                height += 24 * EditorGUIUtility.singleLineHeight + 23 * EditorGUIUtility.standardVerticalSpacing;
                 height += EditorGUI.GetPropertyHeight(prop.FindPropertyRelative("m_Offset"));
             }
             else

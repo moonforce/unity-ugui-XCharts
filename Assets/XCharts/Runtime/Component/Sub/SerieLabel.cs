@@ -102,6 +102,7 @@ namespace XCharts
         [SerializeField] private float m_BorderWidth = 0.5f;
         [SerializeField] private Color m_BorderColor = Color.grey;
         [SerializeField] private string m_NumericFormatter = "";
+        [SerializeField] private bool m_ExchangeLableLineLength = false;
 
         /// <summary>
         /// Whether the label is showed.
@@ -331,6 +332,14 @@ namespace XCharts
         {
             get { return m_NumericFormatter; }
             set { if (PropertyUtility.SetClass(ref m_NumericFormatter, value)) SetComponentDirty(); }
+        }
+        /// <summary>
+        /// 是否交换两线段长度。
+        /// </summary>
+        public bool exchangeLableLineLength
+        {
+            get { return m_ExchangeLableLineLength; }
+            set { if (PropertyUtility.SetStruct(ref m_ExchangeLableLineLength, value)) SetVerticesDirty(); }
         }
     }
 }
