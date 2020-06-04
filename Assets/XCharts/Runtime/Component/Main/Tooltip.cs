@@ -63,6 +63,7 @@ namespace XCharts
         [SerializeField] private float m_PaddingLeftRight = 5f;
         [SerializeField] private float m_PaddingTopBottom = 5f;
         [SerializeField] private string m_IgnoreDataDefaultContent = "-";
+        [SerializeField] private bool m_AlwayShow = true;
         [SerializeField] private Sprite m_BackgroundImage;
         [SerializeField] private TextStyle m_TextStyle = new TextStyle(18, FontStyle.Normal);
         [SerializeField] private LineStyle m_LineStyle = new LineStyle(LineStyle.Type.Solid, 0.7f);
@@ -101,40 +102,20 @@ namespace XCharts
         /// {b}为数据项名serieData的name，或者类目值（如折线图的X轴）。
         /// {c}为数值。
         /// {d}为百分比值，注意不带%号。
-        /// {a1}、{b1}、{c1}表示指定index为1的serie，{a}默认index为0的serie。
+        /// {.1}表示指定index为1的serie对应颜色的圆点。
+        /// {a1}、{b1}、{c1}中的1表示指定index为1的serie，{a}默认index为0的serie。
         /// {c1:2}表示索引为1的serie的数据项的第3个数据（index为2）。
-        /// {c1:2-2}表示索引为1的serie的第3个数据项的第3个数据。
+        /// {c1:2-2}表示索引为1的serie的第3个数据项的第3个数据（一个数据项有多个数据）。
         /// {d1:2:f2}表示单独指定了数值的格式化字符串为f2（不指定时用numericFormatter）。
         /// 示例："{a}:{c}"、"{a1}:{c1:f1}"、"{a1}:{c1:1f1}"
         /// </summary>
         public string formatter { get { return m_Formatter; } set { m_Formatter = value; } }
         /// <summary>
         /// 提示框标题内容的字符串模版格式器。支持用 \n 换行。仅当itemFormatter生效时才有效。
-        /// 模板变量有{.}、{a}、{b}、{c}、{d}。
-        /// {.}表示带动态颜色的圆点。
-        /// {a}为系列名serie的name。
-        /// {b}为数据项名serieData的name，或者类目值（如折线图的X轴）。
-        /// {c}为数值。
-        /// {d}为百分比值，注意不带%号。
-        /// {a1}、{b1}、{c1}表示指定index为1的serie，{a}默认index为0的serie。
-        /// {c1:2}表示索引为1的serie的数据项的第3个数据（index为2）。
-        /// {c1:2-2}表示索引为1的serie的第3个数据项的第3个数据。
-        /// {d1:2:f2}表示单独指定了数值的格式化字符串为f2（不指定时用numericFormatter）。
-        /// 示例："{a}:{c}"、"{a1}:{c1:f1}"、"{a1}:{c1:1f1}"
         /// </summary>
         public string titleFormatter { get { return m_TitleFormatter; } set { m_TitleFormatter = value; } }
         /// <summary>
         /// 提示框单个serie或数据项内容的字符串模版格式器。支持用 \n 换行。当formatter不为空时，优先使用formatter，否则使用itemFormatter。
-        /// 模板变量有{.}、{a}、{b}、{c}、{d}。
-        /// {.}表示带动态颜色的圆点。
-        /// {a}为系列名serie的name。
-        /// {b}为数据项名serieData的name，或者类目值（如折线图的X轴）。
-        /// {c}为数值。
-        /// {d}为百分比值，注意不带%号。
-        /// {c:2}表示索引为1的serie的数据项的第3个数据（index为2）。
-        /// {c:2-2}表示索引为1的serie的第3个数据项的第3个数据。
-        /// {d:f2}表示单独指定了数值的格式化字符串为f2（不指定时用numericFormatter）。
-        /// 示例："{a}:{c}"、"{a1}:{c1:f1}"、"{a1}:{c1:1f1}"
         /// </summary>
         public string itemFormatter { get { return m_ItemFormatter; } set { m_ItemFormatter = value; } }
 
@@ -189,6 +170,10 @@ namespace XCharts
         /// 图标的图片。
         /// </summary>
         public Sprite backgroundImage { get { return m_BackgroundImage; } set { m_BackgroundImage = value; SetBackground(m_BackgroundImage); } }
+        /// <summary>
+        /// 是否触发后一直显示。
+        /// </summary>
+        public bool alwayShow { get { return m_AlwayShow; } set { m_AlwayShow = value; } }
         /// <summary>
         /// 提示框内容文本样式。
         /// </summary>
@@ -403,6 +388,7 @@ namespace XCharts
         /// <param name="flag"></param>
         public void SetActive(bool flag)
         {
+            if(!flag && m_AlwayShow) return;
             lastDataIndex[0] = lastDataIndex[1] = -1;
             if (m_GameObject && m_GameObject.activeInHierarchy != flag)
                 m_GameObject.SetActive(flag);
