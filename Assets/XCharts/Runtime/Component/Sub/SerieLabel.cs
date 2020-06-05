@@ -102,7 +102,8 @@ namespace XCharts
         [SerializeField] private float m_BorderWidth = 0.5f;
         [SerializeField] private Color m_BorderColor = Color.grey;
         [SerializeField] private string m_NumericFormatter = "";
-        [SerializeField] private bool m_ExchangeLableLineLength = false;
+        [SerializeField] private bool m_AutoOffset = false;
+		[SerializeField] private bool m_ExchangeLableLineLength = false;
 
         /// <summary>
         /// Whether the label is showed.
@@ -334,6 +335,14 @@ namespace XCharts
             set { if (PropertyUtility.SetClass(ref m_NumericFormatter, value)) SetComponentDirty(); }
         }
         /// <summary>
+        /// 是否开启自动偏移。当开启时，Y的偏移会自动判断曲线的开口来决定向上还是向下偏移。
+        /// </summary>
+        public bool autoOffset
+        {
+            get { return m_AutoOffset; }
+            set { if (PropertyUtility.SetStruct(ref m_AutoOffset, value)) SetAllDirty(); }
+        }
+		/// <summary>
         /// 是否交换两线段长度。
         /// </summary>
         public bool exchangeLableLineLength

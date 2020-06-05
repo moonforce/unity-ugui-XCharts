@@ -44,7 +44,8 @@ namespace XCharts
             SerializedProperty m_BorderWidth = prop.FindPropertyRelative("m_BorderWidth");
             SerializedProperty m_BorderColor = prop.FindPropertyRelative("m_BorderColor");
             SerializedProperty m_NumericFormatter = prop.FindPropertyRelative("m_NumericFormatter");
-            SerializedProperty m_ExchangeLableLineLength = prop.FindPropertyRelative("m_ExchangeLableLineLength");
+            SerializedProperty m_AutoOffset = prop.FindPropertyRelative("m_AutoOffset");
+			SerializedProperty m_ExchangeLableLineLength = prop.FindPropertyRelative("m_ExchangeLableLineLength");
 
             ChartEditorHelper.MakeFoldout(ref drawRect, ref m_SerieLabelToggle, prop, null, show, false);
             drawRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
@@ -57,6 +58,8 @@ namespace XCharts
                 EditorGUI.PropertyField(drawRect, m_Offset);
                 drawRect.y += EditorGUI.GetPropertyHeight(m_Offset);
 
+                EditorGUI.PropertyField(drawRect, m_AutoOffset);
+                drawRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
                 EditorGUI.PropertyField(drawRect, m_Margin);
                 drawRect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
                 EditorGUI.PropertyField(drawRect, m_Formatter);
@@ -110,7 +113,7 @@ namespace XCharts
             float height = 0;
             if (ChartEditorHelper.IsToggle(m_SerieLabelToggle, prop))
             {
-                height += 24 * EditorGUIUtility.singleLineHeight + 23 * EditorGUIUtility.standardVerticalSpacing;
+                height += 25 * EditorGUIUtility.singleLineHeight + 24 * EditorGUIUtility.standardVerticalSpacing;
                 height += EditorGUI.GetPropertyHeight(prop.FindPropertyRelative("m_Offset"));
             }
             else
